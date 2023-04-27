@@ -1,7 +1,9 @@
 from aiogram import Bot, Dispatcher
-from aiogram.filters import Command
+from aiogram.filters import Command, or_f
 from aiogram.types import Message
 from aiogram import F
+from aiogram.filters import Text
+
 
 # Вместо BOT TOKEN HERE нужно вставить токен вашего бота, полученный у @BotFather
 API_TOKEN: str = '6288842116:AAGPEaQ4pDE-3-MDuNjsRGL9zSa5XY7nwzw'
@@ -9,7 +11,6 @@ API_TOKEN: str = '6288842116:AAGPEaQ4pDE-3-MDuNjsRGL9zSa5XY7nwzw'
 # Создаем объекты бота и диспетчера
 bot: Bot = Bot(token=API_TOKEN)
 dp: Dispatcher = Dispatcher()
-
 
 # Этот хэндлер будет срабатывать на команду "/start"
 @dp.message(Command(commands=["start"]))
@@ -51,9 +52,14 @@ async def send_sticker_echo(message: Message):
 async def send_photo_echo(message: Message):
      await message.reply_photo(message.photo[0].file_id)
      await message.answer_photo(message.photo[0].file_id)
-@dp.message()
-async def send_echo(message: Message):
-    await message.reply(text=message.text)
-    await message.answer(text=message.text)
+@dp.message(Text(contains = ['молоко'],ignore_case = True))
+@dp.message(Text(contains = ['кефир'],ignore_case = True))
+@dp.message(Text(contains = ['йогурт'],ignore_case = True))
+async def send_echo_answer(message: Message):
+    await message.answer(text='Это очень полезные продукты!')
+# @dp.message()
+# async def send_echo(message: Message):
+#     await message.reply(text=message.text)
+#     await message.answer(text=message.text)
 if __name__ == '__main__':
     dp.run_polling(bot)
