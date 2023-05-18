@@ -18,7 +18,6 @@ offset: int = -2
 counter: int = 0
 cat_response: requests.Response
 cat_link: str
-
 DIGITS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 ms_error = "Out of range"
 current = ''
@@ -96,23 +95,12 @@ async def process_help_command(message: Message):
                          ',в которую нужно перевести число.\n\n'
                          'Команда "Перевести число в десятичную систему счисления" переводит число из любой(не десятичной)'
                          'системы в десятичную.\nДля этого нужно ввести число и основание системы счисления введённого числа.\n\n')
-@dp.message(Text(text="Не нажимать"))
-async def secret_cat(message: Message):
+@dp.message(Text(text="Не трогать"))
+async def secret_def(message: Message):
     while True:
-        updates = requests.get(f'{API_URL}{BOT_TOKEN}/getUpdates?offset={offset + 1}').json()
+        await bot.send_sticker(chat_id=message.from_user.id,
+                               sticker=r"CAACAgIAAxkBAAEJBiVkZjod_eXHST5R1Uxp1wabrEFFEgACtyYAArUY2Ej4EhvlvQaOSy8E")
 
-        if updates['result']:
-            for result in updates['result']:
-                offset = result['update_id']
-                chat_id = result['message']['from']['id']
-                cat_response = requests.get(API_CATS_URL)
-                if cat_response.status_code == 200:
-                    cat_link = cat_response.json()[0]['url']
-                    await message.answer(requests.get(f'{API_URL}{BOT_TOKEN}/sendPhoto?chat_id={chat_id}&photo={cat_link}'))
-                else:
-                    await message.answer(requests.get(f'{API_URL}{BOT_TOKEN}/sendMessage?chat_id={chat_id}&text={ERROR_TEXT}'))
-
-        time.sleep(1)
 
 if __name__ == '__main__':
     dp.run_polling(bot)
