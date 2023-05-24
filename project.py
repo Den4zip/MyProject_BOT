@@ -2,8 +2,8 @@ from aiogram import Bot, Dispatcher
 from aiogram.filters import Text, Command, or_f
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, KeyboardButtonPollType, Message
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
-import requests
-import time
+from random import randint
+
 BOT_TOKEN: str = '6288842116:AAGPEaQ4pDE-3-MDuNjsRGL9zSa5XY7nwzw'
 
 # Создаем объекты бота и диспетчера
@@ -11,15 +11,15 @@ bot: Bot = Bot(BOT_TOKEN)
 dp: Dispatcher = Dispatcher()
 kb_builder1: ReplyKeyboardBuilder = ReplyKeyboardBuilder()
 kb_builder2: ReplyKeyboardBuilder = ReplyKeyboardBuilder()
-API_URL: str = 'https://api.telegram.org/bot'
-API_CATS_URL: str = 'https://api.thecatapi.com/v1/images/search'
-ERROR_TEXT: str = 'Здесь должна была быть картинка с котиком :('
-offset: int = -2
-counter: int = 0
-cat_response: requests.Response
-cat_link: str
 DIGITS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 ms_error = "Out of range"
+kittens_stickers = ['CAACAgIAAxkBAAEJF61kbigthOn6NrOzEJRtIpxTg_Mg2AACoxgAArvwwEuKzMnbs96XFy8E',
+                    'CAACAgIAAxkBAAEJF69kbigxXy0UJoQcyUIvDh2nHDpFfQACzRQAAj_oyEsAAdDBEYT0LHwvBA',
+                    'CAACAgIAAxkBAAEJF7Fkbig4Ezs48cDCoHq_J5bf94fATAACixQAAtMncEjDbeKmKcIRGC8E',
+                    'CAACAgIAAxkBAAEJF7Nkbig8yjylxic1JmQVj1r3S3IQYAACbRQAApLAcUiYAAFRicjxcvkvBA',
+                    'CAACAgIAAxkBAAEJF7VkbihA6wlFWFLE34DVsRQ-rw_vOwACjhcAAgzYaUjbXjCV4aGCOy8E',
+                    'CAACAgIAAxkBAAEJF9hkbiwhLR1fsIgJTDTLF0fH4_4MDwACWRcAAtSJ6UgInxcFXrXpEy8E',
+                    'CAACAgIAAxkBAAEJF-BkbixMH3nafHGJqB57DRQyac8d_gAC_BcAAnq-yUugX_MausOeZS8E']
 current = ''
 c_c = ''
 flag1 = False
@@ -27,7 +27,7 @@ flag2 = False
 btn_i2s:KeyboardButton = KeyboardButton(text='Перевести число из десятичной системы счисления')
 btn_s2i:KeyboardButton = KeyboardButton(text='Перевести число в десятичную систему счисления')
 btn_help:KeyboardButton = KeyboardButton(text='Help')
-btn_secret:KeyboardButton = KeyboardButton(text='Не трогать')
+btn_secret:KeyboardButton = KeyboardButton(text='Котики')
 kb_builder1.row(btn_i2s, btn_s2i, btn_help,btn_secret, width=1)
 keyboard1: ReplyKeyboardMarkup = kb_builder1.as_markup(
                                     resize_keyboard=True)
@@ -95,11 +95,13 @@ async def process_help_command(message: Message):
                          ',в которую нужно перевести число.\n\n'
                          'Команда "Перевести число в десятичную систему счисления" переводит число из любой(не десятичной)'
                          'системы в десятичную.\nДля этого нужно ввести число и основание системы счисления введённого числа.\n\n')
-@dp.message(Text(text="Не трогать"))
+@dp.message(Text(text="Котики"))
 async def secret_def(message: Message):
-    while True:
         await bot.send_sticker(chat_id=message.from_user.id,
-                               sticker=r"CAACAgIAAxkBAAEJBiVkZjod_eXHST5R1Uxp1wabrEFFEgACtyYAArUY2Ej4EhvlvQaOSy8E")
+                               sticker=kittens_stickers[randint(0,6)])
+@dp.message()
+async def unknown_message_process(message: Message):
+    await message.answer(f"Неизвестная команда",reply_markup=keyboard1)
 
 
 if __name__ == '__main__':
